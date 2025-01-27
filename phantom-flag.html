@@ -3,57 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Phantom Flag</title>
+    <title>The Broken Lock</title>
     <script>
-        // Anti-debugging technique: Detect debugger and break execution
-        function detectDebugger() {
-            const startTime = Date.now();
-            debugger;
-            const endTime = Date.now();
-            if (endTime - startTime > 100) {
-                alert("Debugger detected! Closing the page...");
-                window.close();
+        // Hidden flag
+        const flag = "CTF{Br3akp01nts_4r3_P0w3rful}";
+
+        // Lock mechanism
+        function checkLock(input) {
+            let state = 0;
+            let sequence = [4, 2, 3, 1]; // Correct sequence to unlock the lock
+
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] == sequence[state]) {
+                    state++;
+                } else {
+                    state = 0; // Reset if the sequence is broken
+                }
+
+                // Debugging hint: Set a breakpoint here to inspect the state
+                if (state === sequence.length) {
+                    return true; // Lock unlocked
+                }
+            }
+            return false; // Lock remains locked
+        }
+
+        // Handle user input
+        function tryUnlock() {
+            const userInput = document.getElementById("lockInput").value;
+            const numbers = userInput.split(",").map(Number);
+
+            if (checkLock(numbers)) {
+                document.getElementById("message").innerText = `Lock unlocked! The flag is: ${flag}`;
+            } else {
+                document.getElementById("message").innerText = "Lock is still locked. Try again!";
             }
         }
-
-        // Obfuscated flag generation
-        function generateFlag() {
-            const part1 = "Ph4nt0m_";
-            const part2 = "Fl4g_";
-            const part3 = "1s_H3r3";
-            return part1 + part2 + part3;
-        }
-
-        // Asynchronous flag obfuscation
-        async function obfuscateFlag() {
-            const flag = generateFlag();
-            let obfuscatedFlag = "";
-            for (let i = 0; i < flag.length; i++) {
-                obfuscatedFlag += String.fromCharCode(flag.charCodeAt(i) ^ 0x0F);
-                await new Promise(resolve => setTimeout(resolve, 100)); // Delay to make it harder
-            }
-            return obfuscatedFlag;
-        }
-
-        // Dynamic DOM manipulation to hide the flag
-        async function hideFlag() {
-            const obfuscatedFlag = await obfuscateFlag();
-            const div = document.createElement("div");
-            div.id = "phantom";
-            div.style.display = "none";
-            div.innerText = obfuscatedFlag;
-            document.body.appendChild(div);
-        }
-
-        // Anti-debugging: Continuously check for debugger
-        setInterval(detectDebugger, 1000);
-
-        // Start the process
-        hideFlag();
     </script>
 </head>
 <body>
-    <h1>The Phantom Flag</h1>
-    <p>Find the flag hidden in the shadows...</p>
+    <h1>The Broken Lock</h1>
+    <p>Enter a sequence of numbers (comma-separated) to unlock the lock:</p>
+    <input type="text" id="lockInput" placeholder="e.g., 1,2,3,4">
+    <button onclick="tryUnlock()">Unlock</button>
+    <p id="message"></p>
 </body>
 </html>
