@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Locked Console</title>
+    <script>
+        // Prevent console access
+        console.log = function() {};
+        console.warn = function() {};
+        console.error = function() {};
+        console.clear();
+
+        // Dynamically generate the flag
+        const secretKey = Math.random().toString(36).substring(2, 15);
+        const flag = `CTF{Unlock_${secretKey}_Console}`;
+
+        // Hide the flag in a closure
+        function createVault() {
+            const vault = {
+                getFlag: function() {
+                    return flag;
+                }
+            };
+            return vault;
+        }
+
+        const vault = createVault();
+
+        // Event listener to check for console access
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.shiftKey && event.key === 'I') {
+                alert("Console access is restricted!");
+                event.preventDefault();
+            }
+        });
+
+        // Display a fake message
+        document.getElementById('message').innerText = "The console is locked. Find another way to get the flag!";
+    </script>
+</head>
+<body>
+    <h1>The Locked Console</h1>
+    <p id="message"></p>
+</body>
+</html>
