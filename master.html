@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Master Debugger CTF</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #000;
+            padding: 20px;
+            border: 1px solid #0f0;
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
+        }
+        input {
+            background: #000;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 8px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            background: #030;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+        }
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-rain" id="matrix"></canvas>
+    <div class="container">
+        <h1>Level 3: The Quantum Vault</h1>
+        <p>Warning: Advanced security measures detected.</p>
+        <p>System protected by temporal polymorphic encryption.</p>
+        <div>
+            <input type="text" id="flag-input" placeholder="Enter flag{...}">
+            <button onclick="validateSequence()">Execute</button>
+        </div>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        // Anti-debugging measures
+        (function() {
+            let start = performance.now();
+            debugger;
+            if(performance.now() - start > 100) {
+                // Detected debugging attempt
+                window._debugDetected = true;
+            }
+        })();
+
+        // Matrix rain background effect
+        (function setupMatrix() {
+            const canvas = document.getElementById('matrix');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const chars = '01'.split('');
+            const drops = Array(Math.floor(canvas.width/20)).fill(0);
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(0,0,0,0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#0f0';
+                ctx.font = '15px monospace';
+                
+                drops.forEach((y, i) => {
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(char, i * 20, y);
+                    if(y > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i] += 20;
+                });
+            }
+            
+            setInterval(draw, 50);
+        })();
+
+        // Polymorphic code generator
+        const generatePolymorphicCode = (function() {
+            const templates = [
+                (x) => `(${x}).toString(36)`,
+                (x) => `(${x} << 2).toString(16)`,
+                (x) => `Math.sqrt(${x} * 4).toString()`
+            ];
+            
+            return function(seed) {
+                const template = templates[seed % templates.length];
+                return new Function('return ' + template(seed))();
+            };
+        })();
+
+        // Virtual Machine for flag verification
+        class VM {
+            constructor() {
+                this.stack = [];
+                this.memory = new Uint8Array(256);
+                this.ip = 0;
+            }
+
+            execute(program) {
+                while(this.ip < program.length) {
+                    const opcode = program[this.ip++];
+                    switch(opcode) {
+                        case 0x01: // PUSH
+                            this.stack.push(program[this.ip++]);
+                            break;
+                        case 0x02: // POP
+                            this.memory[program[this.ip++]] = this.stack.pop();
+                            break;
+                        case 0x03: // XOR
+                            const a = this.stack.pop();
+                            const b = this.stack.pop();
+                            this.stack.push(a ^ b);
+                            break;
+                        case 0x04: // ROT
+                            const v = this.stack.pop();
+                            this.stack.push((v << 1) | (v >> 7));
+                            break;
+                    }
+                }
+            }
+
+            getMemory() {
+                return this.memory;
+            }
+        }
+
+        // Encrypted bytecode
+        const encryptedBytecode = [
+            // ... bytecode will be generated dynamically
+        ];
+
+        // Key schedule
+        const keySchedule = (function() {
+            const keys = new Uint8Array(32);
+            const mixer = new Uint8Array(16);
+            
+            return function(seed) {
+                for(let i = 0; i < 16; i++) {
+                    mixer[i] = (seed >> (i * 2)) & 0xFF;
+                }
+                
+                for(let i = 0; i < 32; i++) {
+                    keys[i] = mixer[i % 16] ^ (i * 13);
+                }
+                
+                return keys;
+            };
+        })();
+
+        // Dynamic instruction generation
+        function generateInstructions(seed) {
+            const instructions = [];
+            const key = keySchedule(seed);
+            
+            for(let i = 0; i < key.length; i++) {
+                instructions.push(0x01); // PUSH
+                instructions.push(key[i]);
+                if(i > 0 && i % 2 === 0) {
+                    instructions.push(0x03); // XOR
+                }
+                if(i > 0 && i % 4 === 0) {
+                    instructions.push(0x04); // ROT
+                }
+            }
+            
+            return instructions;
+        }
+
+        // Main validation function
+        function validateSequence() {
+            try {
+                if(window._debugDetected) {
+                    throw new Error("Security violation detected");
+                }
+
+                const input = document.getElementById('flag-input').value;
+                const status = document.getElementById('status');
+
+                // Time-based seed
+                const seed = Date.now() & 0xFFFFFFFF;
+                const vm = new VM();
+                
+                // Generate and execute dynamic instructions
+                const instructions = generateInstructions(seed);
+                vm.execute(instructions);
+                
+                // Get result from VM memory
+                const result = Array.from(vm.getMemory().slice(0, 16))
+                    .map(x => generatePolymorphicCode(x))
+                    .join('');
+
+                // Validate input against dynamic result
+                const expectedFlag = btoa(result).substring(0, 16);
+                
+                if(input === `flag{${expectedFlag}}`) {
+                    status.innerHTML = '<span style="color: #0f0">✓ Access granted. System compromised.</span>';
+                } else {
+                    status.innerHTML = '<span style="color: #f00">✗ Access denied. Security systems active.</span>';
+                }
+            } catch(e) {
+                document.getElementById('status').innerHTML = 
+                    '<span style="color: #f00">⚠ Critical system error detected</span>';
+            }
+        }
+
+        // Initialize security systems
+        console.log("%cSecurity systems active. Quantum encryption enabled.", "color: #0f0");
+    </script>
+</body>
+</html>
