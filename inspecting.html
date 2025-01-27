@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Me CTF Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .challenge-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        #flag-input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hint {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="challenge-box">
+        <h1>Browser Debugger CTF Challenge</h1>
+        <p>Welcome, debugger! Your mission is to find the hidden flag in this page.</p>
+        <p class="hint">Hint: Use the browser's debugger (F12) to inspect the JavaScript code and find the flag!</p>
+        
+        <div>
+            <input type="text" id="flag-input" placeholder="Enter the flag here (format: flag{...})">
+            <button onclick="checkFlag()">Submit Flag</button>
+        </div>
+        
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // This function is called when the page loads
+        (function initializeChallenge() {
+            // Hidden flag parts
+            const part1 = "ZGVidWc=";
+            const part2 = "Z2Vy";
+            const part3 = "X21hc3Rlcg==";
+            
+            // Store encoded flag in a "hidden" variable
+            window._secretFlag = window.atob(part1 + part2 + part3);
+            
+            // Add some obfuscation
+            console.log("Challenge initialized! Can you find the flag?");
+        })();
+
+        // This function checks if the entered flag is correct
+        function checkFlag() {
+            debugger; // First breakpoint
+            
+            const input = document.getElementById('flag-input').value;
+            const result = document.getElementById('result');
+            
+            // Some misdirection variables
+            let fake_flag = "flag{not_this_one}";
+            let another_fake = "flag{try_harder}";
+            
+            // The actual checking happens here
+            debugger; // Second breakpoint
+            
+            if (input === "flag{" + window._secretFlag + "}") {
+                result.style.color = "green";
+                result.textContent = "🎉 Congratulations! You found the correct flag!";
+            } else {
+                result.style.color = "red";
+                result.textContent = "❌ That's not the correct flag. Keep trying!";
+            }
+        }
+
+        // Add some console messages to help guide the player
+        console.log("💡 Tip: The debugger is your friend!");
+        console.log("💡 Try setting breakpoints and inspecting variables!");
+    </script>
+</body>
+</html>
