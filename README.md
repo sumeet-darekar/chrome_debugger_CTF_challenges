@@ -2,7 +2,7 @@
 A browser-based CTF challenge focused on advanced chrome debugging techniques.
 
 ## Challenge Overview
-- **Difficulty**: Expert Level
+- **Difficulty**: Noob to Expert Level
 - **Type**: Browser Debugging
 - **Goal**: Find the hidden flag
 - **Format**: `flag{XXXXXXXXXXXXXXXX} or ctf{xxxxxxxxxxxxxxxx}`
