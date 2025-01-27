@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Encrypted Vault</title>
+    <script>
+        // Layer 1: Base64 encoding
+        function encodeBase64(str) {
+            return btoa(str);
+        }
+
+        // Layer 2: Caesar cipher (shift by 5)
+        function caesarCipher(str, shift) {
+            return str.split('').map(char => {
+                if (/[a-zA-Z]/.test(char)) {
+                    const base = char === char.toLowerCase() ? 'a'.charCodeAt(0) : 'A'.charCodeAt(0);
+                    return String.fromCharCode((char.charCodeAt(0) - base + shift) % 26 + base);
+                }
+                return char;
+            }).join('');
+        }
+
+        // Layer 3: Reverse the string
+        function reverseString(str) {
+            return str.split('').reverse().join('');
+        }
+
+        // The hidden flag is encrypted using all three layers
+        const encryptedFlag = reverseString(caesarCipher(encodeBase64("CTF{Debugger_Is_Powerful}"), 5));
+
+        function checkAccess() {
+            const userInput = document.getElementById('vaultInput').value;
+            if (userInput === encryptedFlag) {
+                alert("Access granted! The flag is: CTF{Debugger_Is_Powerful}");
+            } else {
+                alert("Access denied. Try again!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>The Encrypted Vault</h1>
+    <p>Enter the vault key to access the flag:</p>
+    <input type="text" id="vaultInput" placeholder="Enter vault key">
+    <button onclick="checkAccess()">Submit</button>
+</body>
+</html>
