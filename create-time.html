@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Debugger CTF</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .terminal {
+            background: #000;
+            padding: 20px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
+        }
+        input {
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 5px 10px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            background: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #004400;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .success {
+            color: #00ff00;
+        }
+        #challenge-area {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <h1>Level 2: The Time Lock</h1>
+        <p>Welcome agent. This security system uses temporal verification and nested encryption.</p>
+        <p>Your mission: Extract and decrypt the flag.</p>
+        <div id="challenge-area">
+            <input type="text" id="flag-input" placeholder="Enter flag{...}">
+            <button onclick="submitFlag()">Submit</button>
+        </div>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // Obfuscated initialization
+        (function() {
+            const _0x4f2d = ['value', 'flag-input', 'result', 'innerHTML', 'substring'];
+            (function(_0x2d8f1f, _0x4f2d81) {
+                const _0x2d8f1f2 = function(_0x4f2d811) {
+                    while (--_0x4f2d811) {
+                        _0x2d8f1f['push'](_0x2d8f1f['shift']());
+                    }
+                };
+                _0x2d8f1f2(++_0x4f2d81);
+            }(_0x4f2d, 0x1a9));
+        })();
+
+        // Time-based key generation
+        const generateKey = (function() {
+            let keyCache = {};
+            return function(timestamp) {
+                if (keyCache[timestamp]) return keyCache[timestamp];
+                
+                let key = '';
+                for(let i = 0; i < 8; i++) {
+                    key += String.fromCharCode(((timestamp >> (i * 4)) & 0xF) + 97);
+                }
+                keyCache[timestamp] = key;
+                return key;
+            };
+        })();
+
+        // Encrypted flag parts
+        const encryptedParts = {
+            part1: [104, 97, 99, 107],
+            part2: [101, 114, 95, 116],
+            part3: [105, 109, 101, 114]
+        };
+
+        // Flag verification system
+        function verifyFlag(input, timestamp) {
+            const key = generateKey(timestamp);
+            let expectedFlag = '';
+            
+            // Dynamic flag generation
+            for(let part in encryptedParts) {
+                expectedFlag += encryptedParts[part]
+                    .map(c => String.fromCharCode(c ^ key.charCodeAt(0)))
+                    .join('');
+            }
+
+            debugger; // Breakpoint 1
+
+            // Time-based verification
+            const timeKey = Math.floor(timestamp / 1000) % 60;
+            expectedFlag = expectedFlag.split('')
+                .map(c => String.fromCharCode(c.charCodeAt(0) + timeKey))
+                .join('');
+
+            debugger; // Breakpoint 2
+
+            return input === `flag{${expectedFlag}}`;
+        }
+
+        // Flag submission handler
+        function submitFlag() {
+            const input = document.getElementById('flag-input').value;
+            const result = document.getElementById('result');
+            
+            // Secret timestamp stored in closure
+            const secretTime = new Date('2024-01-27T13:37:00').getTime();
+            
+            try {
+                if (verifyFlag(input, secretTime)) {
+                    result.innerHTML = '<span class="success">🎉 Congratulations! You\'ve cracked the time lock!</span>';
+                } else {
+                    result.innerHTML = '<span class="error">❌ Incorrect flag. Time is of the essence...</span>';
+                }
+            } catch(e) {
+                result.innerHTML = '<span class="error">⚠️ System error detected!</span>';
+            }
+        }
+
+        // Initialize with some debugging helpers
+        console.log("System initialized. Time verification active.");
+        // Hidden helper
+        window.debug = function(t) { return generateKey(t); };
+    </script>
+</body>
+</html>
