@@ -56,12 +56,12 @@
     <script>
         // This function is called when the page loads
         (function initializeChallenge() {
-            // Hidden flag parts
-            const part1 = "ZGVidWc=";
-            const part2 = "Z2Vy";
-            const part3 = "X21hc3Rlcg==";
+            // Hidden flag parts (properly encoded)
+            const part1 = "aGFja2Vy";  // "hacker"
+            const part2 = "X2lu";      // "_in"
+            const part3 = "X2FjdGlvbg==";  // "_action"
             
-            // Store encoded flag in a "hidden" variable
+            // Store decoded flag in a "hidden" variable
             window._secretFlag = window.atob(part1 + part2 + part3);
             
             // Add some obfuscation
